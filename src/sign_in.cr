@@ -5,7 +5,7 @@ require "./create_student.cr"
 require "./accounts.cr"
 
 # 到了这个剩余秒数，就要开始签到
-DEADLINE = 20
+DEADLINE = 15
 
 class Signer
   def initialize()
@@ -50,13 +50,16 @@ class Signer
           Log.info{"密码签到剩余 #{remaining_seconds} 秒"}
 
           # 小于指定时间，开始签到
-          if remaining_seconds <= DEADLINE
+          if remaining_seconds <= DEADLINE && remaining_seconds > 0
             @students.each do |student|
               student.post(courseSignInId, codeStringUrl)
             end
             #签完到，退出
             break
           end
+
+          # 剩余秒数归零，退出循环
+          break if remaining_seconds == 0
 
           # 一秒拉取一回剩余时间
           sleep 1
