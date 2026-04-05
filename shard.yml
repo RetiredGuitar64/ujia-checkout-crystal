@@ -6,7 +6,7 @@ authors:
 
 targets:
   ujiacrystal:
-    main: src/ujiacrystal.cr
+    main: src/main.cr
 
 crystal: '>= 1.19.1'
 

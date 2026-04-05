@@ -1,0 +1,3 @@
+ACCOUNTS = [
+  ["test","ZGExYjVjNWMtYmFlYi00NWRhLTk0MjAtMmJlMzRiZGMwNGM2"]
+]
