@@ -1,0 +1,13 @@
+name: ujiacrystal
+version: 0.1.0
+
+authors:
+  - RetiredGuitar64 <retiredguitar64@qq.com>
+
+targets:
+  ujiacrystal:
+    main: src/ujiacrystal.cr
+
+crystal: '>= 1.19.1'
+
+license: MIT
