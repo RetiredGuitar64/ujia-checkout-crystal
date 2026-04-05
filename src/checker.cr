@@ -5,9 +5,11 @@ require "log"
 require "./accounts.cr"
 require "./sign_in.cr"
 
+# check循环的间隔
 SLEEP_GAP_IN_LOOP = 2
-# 签到id正则
+# 签到id字段正则
 COURSE_SIGN_IN_ID_RE = /"courseSignInId"\s*:\s*"([0-9a-f]{32})"/
+# 签到码字段正则
 CODE_DISTANCE_RE = /"codeDistance"\s*:\s*"(\d{3,4})"/
 
 class Checker
