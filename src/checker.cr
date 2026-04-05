@@ -37,17 +37,17 @@ class Checker
       response = HTTP::Client.get(id_check_url, check_headers)
 
       if response.status_code == 200
-        if courseSignInId = detect_courseSignInId(response) # 尝试抓取签到id
+        if courseSignInId : (String | Nil) = detect_courseSignInId(response) # 尝试抓取签到id
           Log.info{"探测到签到: #{courseSignInId}"}
           # 开始获取签到码
           code_check_url = "https://www.eduplus.net/api/course/clock_in/#{courseSignInId}/student" # codecheck的url
           response_of_code_check = HTTP::Client.get(code_check_url, check_headers)
 
-          codeDistance = detect_codeDistance(response_of_code_check)
+          codeDistance : String = detect_codeDistance(response_of_code_check)
           Log.info{"签到码: #{codeDistance}"}
 
           # 进入签到流程
-          signer.run
+          signer.run(courseSignInId, codeDistance)
 
         end
       else
