@@ -40,7 +40,7 @@ class Checker
           codeDistance = detect_codeDistance(response_of_code_check)
 
           # 进入签到流程
-          puts codeDistance
+          # puts codeDistance
 
         end
       else
@@ -57,7 +57,7 @@ class Checker
       # 匹配到并返回签到id
       return match[1]
     end
-    nil
+    nil # 未匹配到签到id字段，就返回nil
   end
 
   def detect_codeDistance(response : HTTP::Client::Response) : String
