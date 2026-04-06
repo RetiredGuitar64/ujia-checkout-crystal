@@ -8,7 +8,7 @@ require "./accounts.cr"
 DEADLINE = 15
 
 # 完成一轮签到后，休眠秒数
-SLEEP_AFTER_A_ROUND = 20
+SLEEP_AFTER_A_ROUND = 60
 
 class Signer
   def initialize()
