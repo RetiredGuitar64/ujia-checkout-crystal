@@ -1,6 +1,5 @@
 require "http/client"
 require "log"
-require "./accounts.cr"
 
 # 剩余时间字段匹配的正则
 REMAINING_TIME_RE = /"remainingTime"\s*:\s*(\d+)/
@@ -54,7 +53,7 @@ class Student
   end
 
   # 获取剩余秒数，
-  def get_remaining_seconds(courseSignInId : String, codeStringUrl : String) : Int32 # 能获取秒数就肯定是密码签到，密码不能nil, 然后返回一个int32的秒数
+  def get_remaining_seconds(courseSignInId : String, codeStringUrl : String) : Int32 # 普通签到不需要获取秒数，需要获取秒数就肯定是密码签到，所以密码不能nil, 然后返回一个int32的秒数
     response = HTTP::Client.get("https://www.eduplus.net/api/course/clock_in/#{courseSignInId}/student", @sign_in_headers)
 
     # 匹配剩余时间字段
