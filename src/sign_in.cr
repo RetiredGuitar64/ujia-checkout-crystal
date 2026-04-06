@@ -30,9 +30,18 @@ class Signer
       # 则签到url为空
       codeStringUrl = nil
       # 直接进行签到post
-      sleep 1.seconds
-      @students.each do |student|
-        student.post(courseSignInId, codeStringUrl)
+
+      begin
+        sleep 1.seconds
+        @students.each do |student|
+          student.post(courseSignInId, codeStringUrl)
+        end
+      ensure
+        Log.info{"二次签到开始"}
+        @students.each do |student|
+          student.post(courseSignInId, codeStringUrl)
+        end
+        Log.info{"二次签到完成"}
       end
     else
 
