@@ -1,4 +1,11 @@
 require "./checker.cr"
+require "./web.cr"
+require "./status.cr"
 
-checker = Checker.new
+status = Status.new
+
+web = Web.new(status)
+web.start
+
+checker = Checker.new(status)
 checker.run
