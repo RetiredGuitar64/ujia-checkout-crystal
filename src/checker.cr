@@ -55,14 +55,20 @@ class Checker
           # 扫描签到码, 4位就是正常码，3位就是200, 即普通签到，
           codeDistance : String = detect_codeDistance(response_of_code_check)
           Log.info{"签到码: #{codeDistance}"}
+          # web显示签到码
+          @status.display_signin_code(codeDistance)
 
           # 进入签到流程, 传入签到id和签到码,4位数字为密码签到，或200,为普通签到
           signer.run(courseSignInId, codeDistance)
-
+        else
+          # web状态码为200, 但是没有get到签到id, 显示为正常状态
+          @status.display_normal_status
         end
       else
         # 状态码不为200, 说明有问题
         Log.error{"状态码: #{response.status_code}, \"#{@name}\" 的token \"#{@token}\" 可能已失效"}
+        # web显示Error
+        @status.display_404_status
       end
 
       # 间隔几秒
