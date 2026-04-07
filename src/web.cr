@@ -5,25 +5,32 @@ BIND_ADDRESS = "0.0.0.0"
 BIND_PORT = 28888
 
 class Web
-  def initialize(@channel : Channel(String))
+  def initialize(@status : Status)
   end
 
   def start
     web = HTTP::Server.new do |context|
-      context.response.content_type = "text/plain"
-      p "000"
-      context.response.print(
-        if message = @channel.receive
-          message
-        else
-          "没有签到"
-        end
-      )
-      p "111"
+      context.response.content_type = "text/html; charset=utf-8"
+      context.response.print <<-HTML
+      <!doctype html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="refresh" content="2">
+        <title>U+签到状态</title>
+      </head>
+      <body>
+        <pre style="font-size: 32px;">#{@status.web_show}</pre>
+      </body>
+      </html>
+      HTML
     end
+
     address = web.bind_tcp(BIND_ADDRESS, BIND_PORT)
-    p "222"
-    web.listen
-    p "333"
+
+    spawn do
+      web.listen
+    end
+
   end
 end
