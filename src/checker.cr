@@ -12,12 +12,13 @@ COURSE_SIGN_IN_ID_RE = /"courseSignInId"\s*:\s*"([0-9a-f]{32})"/
 CODE_DISTANCE_RE = /"codeDistance"\s*:\s*"(\d{3,4})"/
 
 class Checker
-  getter name, token
+  @name : String
+  @token : String
 
-  def initialize()
+  def initialize(@status : Status)
     # 默认取第一个学生的token为检查token
-    @name : String = ACCOUNTS[0][:name]
-    @token : String = ACCOUNTS[0][:token]
+    @name = ACCOUNTS[0][:name]
+    @token = ACCOUNTS[0][:token]
   end
 
   # 主检查入口

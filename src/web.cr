@@ -31,6 +31,7 @@ class Web
     spawn do
       web.listen
     end
+    Log.info{"Web 已启动"}
 
   end
 end
