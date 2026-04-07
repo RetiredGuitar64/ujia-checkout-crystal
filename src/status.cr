@@ -6,12 +6,18 @@ class Status
 
   def initialize
     @status = Mutex.new
-    @message = "Error: \nInit message\n状态发送出错\n尽快修复！！！"
+    @message = "Error: \nInit message\n签到状态发送出错\n尽快修复！！！"
   end
 
   def web_show
     @status.synchronize do
       @message
+    end
+  end
+
+  def display(message : String)
+    @status.synchronize do
+      @message = message
     end
   end
 
