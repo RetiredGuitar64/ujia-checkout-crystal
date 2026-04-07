@@ -14,8 +14,10 @@ CODE_DISTANCE_RE = /"codeDistance"\s*:\s*"(\d{3,4})"/
 class Checker
   getter name, token
 
-  # 默认取第一个学生的token为检查token
-  def initialize(@name : String = ACCOUNTS[0][:name], @token : String = ACCOUNTS[0][:token])
+  def initialize()
+    # 默认取第一个学生的token为检查token
+    @name : String = ACCOUNTS[0][:name]
+    @token : String = ACCOUNTS[0][:token]
   end
 
   # 主检查入口
