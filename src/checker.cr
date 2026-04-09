@@ -35,6 +35,9 @@ class Checker
       "connection"     => "Keep-Alive",
     }
 
+    # 检查所有账号是否可用
+    check_all_accounts_token_avaliable()
+
     # 创建signer签到器
     signer = Signer.new(@accounts)
 
@@ -99,5 +102,39 @@ class Checker
       Log.warn{"未匹配到签到码字段，未知错误，将默认以普通签到进行"}
       return "200"
     end
+  end
+
+  def check_all_accounts_token_avaliable
+    Log.info{"--------------------"}
+    Log.info{"开始检查: 账号是否全部可用?"}
+
+    # 检查
+    @accounts.each do |account|
+      name = account[:name]
+      token = account[:token]
+      cookie = "SESSION=#{token}"
+
+      id_check_url = "https://www.eduplus.net/api/course/courses/v1/study?types=Theory,Train"
+      check_headers = HTTP::Headers{
+        "accept"         => "application/json, text/plain, */*",
+        "x-access-token" => token,
+        "cookie"         => cookie,
+        "user-agent"     => "okhttp/4.12.0",
+        "host"           => "www.eduplus.net",
+        "connection"     => "Keep-Alive",
+      }
+
+      # 拿到响应
+      response = HTTP::Client.get(id_check_url, check_headers)
+
+      # 状态码判断
+      if response.status_code == 200
+        Log.info{"账号: #{name}, token可用"}
+      else
+        Log.error{"!! 账号#{name} token失效 !! #{token} 状态码: #{response.status_code}"}
+      end
+    end
+    Log.info{"账号token可用性检查完毕"}
+    Log.info{"--------------------"}
   end
 end
