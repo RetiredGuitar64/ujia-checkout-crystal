@@ -5,30 +5,19 @@ ENCRYPTION_KEY_RE = /"encryptionKey"\s*:\s*"([^"]+)"/
 ACCESS_TOKEN_RE = /"accessToken"\s*:\s*"([A-Za-z0-9\-]{48})"/
 
 class AuthSaver
-  @public_key : String
-  @token : String
-
   def initialize
-    @public_key = ""
-    @token = ""
   end
 
   def auth_with_password(phone : String, password : String) : String
-    begin
-      @public_key = get_public_key_with_password_login()
+    public_key = get_public_key_with_password_login()
 
-      cryptogram = encode(phone, password)
+    cryptogram = encode(public_key, phone, password)
 
-      @token = get_token_with_password_login(cryptogram)
+    token = get_token_with_password_login(public_key, cryptogram)
 
-      checkup_if_token_is_avaliable()
+    return "!! token 不可用!! : #{token}" if checkup_if_token_is_avaliable(token) == false
 
-      return @token
-    ensure
-      @public_key = ""
-      @token = ""
-    end
-
+    return token
   end
 
   def auth_with_captcha(phone : String) : String
@@ -56,7 +45,7 @@ class AuthSaver
     end
   end
 
-  def encode(phone : String, password : String) : String
+  def encode(public_key : String, phone : String, password : String) : String
     Log.info{"开始加密..."}
     begin
       temp_script = File.tempfile("ujia_encode_script_tempfile.mjs")
@@ -68,10 +57,14 @@ class AuthSaver
 
       status = Process.run(
         "node",
-        args: [temp_script.path, "--public-key", @public_key, "--identifier", phone, "--password", password, "--only-cryptogram"],
+        args: [temp_script.path, "--public-key", public_key, "--identifier", phone, "--password", password, "--only-cryptogram"],
         output: stdout_io,
         error: stderr_io,
       )
+
+      unless status.success?
+        Log.error{"!! 加密失败 !! exitCode = #{status.exit_code}, stderr = #{stderr_io.to_s}"}
+      end
 
       cryptogram = stdout_io.to_s.strip
       Log.info{"加密完成：cryptogram: #{cryptogram}"}
@@ -88,7 +81,7 @@ class AuthSaver
     end
   end
 
-  def get_token_with_password_login(cryptogram : String) : String
+  def get_token_with_password_login(public_key : String, cryptogram : String) : String
     post_url = "https://uc.eduplus.net/spi/login/submit"
     post_headers = HTTP::Headers{
       "accept"       => "application/json, text/plain, */*",
@@ -97,7 +90,7 @@ class AuthSaver
       "connection"   => "Keep-Alive",
       "user-agent"   => "okhttp/4.12.0",
     }
-    post_body = %({"mode":"Password","encryptionKey":"#{@public_key}","cryptogram":"#{cryptogram}"})
+    post_body = %({"mode":"Password","encryptionKey":"#{public_key}","cryptogram":"#{cryptogram}"})
 
     response = HTTP::Client.post(post_url, headers: post_headers, body: post_body)
 
@@ -110,15 +103,15 @@ class AuthSaver
     end
   end
 
-  def checkup_if_token_is_avaliable()
+  def checkup_if_token_is_avaliable(token : String) : Bool
     Log.info{"检查token可用性"}
 
-    cookie = "SESSION=#{@token}"
+    cookie = "SESSION=#{token}"
 
     id_check_url = "https://www.eduplus.net/api/course/courses/v1/study?types=Theory,Train"
     check_headers = HTTP::Headers{
       "accept"         => "application/json, text/plain, */*",
-      "x-access-token" => @token,
+      "x-access-token" => token,
       "cookie"         => cookie,
       "user-agent"     => "okhttp/4.12.0",
       "host"           => "www.eduplus.net",
@@ -131,8 +124,10 @@ class AuthSaver
     # 状态码判断
     if response.status_code == 200
       Log.info{"检查完毕：token可用"}
+      return true
     else
-      Log.error{"!! token不可用 !! #{@token} 响应体: #{response.body}"}
+      Log.error{"!! token不可用 !! #{token} 响应体: #{response.body}"}
+      return false
     end
   end
 
