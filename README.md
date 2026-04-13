@@ -1,6 +1,6 @@
-# ujia-crystal
+# U+ crystal
 
-用于自动辅助Ujia平台学习的工具
+用于自动辅助**U+平台**学习的工具
 
 ## Features
 - 全自动学习：每两秒自动查看一次学习状态
