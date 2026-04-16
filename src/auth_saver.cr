@@ -32,7 +32,7 @@ class AuthSaver
   def auth_with_captcha(phone : String) : String
   end
 
-  def get_public_key_with_password_login() : String
+  private def get_public_key_with_password_login() : String
     post_url = "https://uc.eduplus.net/spi/login/checkup"
     post_headers = HTTP::Headers{
     "accept"          => "application/json, text/plain, */*",
@@ -56,7 +56,7 @@ class AuthSaver
     end
   end
 
-  def encode(public_key : String, phone : String, password : String) : String
+  private def encode(public_key : String, phone : String, password : String) : String
     Log.info{"开始加密..."}
     begin
       # 开临时文件，
@@ -100,7 +100,7 @@ class AuthSaver
     end
   end
 
-  def get_token_with_password_login(public_key : String, cryptogram : String) : String
+  private def get_token_with_password_login(public_key : String, cryptogram : String) : String
     post_url = "https://uc.eduplus.net/spi/login/submit"
     post_headers = HTTP::Headers{
       "accept"       => "application/json, text/plain, */*",
@@ -124,7 +124,7 @@ class AuthSaver
     end
   end
 
-  def checkup_if_token_is_avaliable(token : String) : Bool
+  private def checkup_if_token_is_avaliable(token : String) : Bool
     Log.info{"检查token可用性"}
 
     cookie = "SESSION=#{token}"
@@ -153,7 +153,7 @@ class AuthSaver
   end
 
   # 脚本内容，放在最后位置，后面没有别的方法了
-  def puts_script
+  private def puts_script
     <<-HEREDOC
     import { readFile } from "node:fs/promises";
     import { resolve } from "node:path";

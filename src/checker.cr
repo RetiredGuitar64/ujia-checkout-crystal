@@ -86,7 +86,7 @@ class Checker
   end
 
   # 探测是否有签到，这个方法会很频繁运行, 需要性能
-  def detect_courseSignInId(response : HTTP::Client::Response) : String?  # 提前指定类型
+  private def detect_courseSignInId(response : HTTP::Client::Response) : String?  # 提前指定类型
     if match = COURSE_SIGN_IN_ID_RE.match(response.body)
       # 匹配到并返回签到id
       return match[1]
@@ -95,7 +95,7 @@ class Checker
   end
 
   # 检测签到码的方法
-  def detect_codeDistance(response : HTTP::Client::Response) : String
+  private def detect_codeDistance(response : HTTP::Client::Response) : String
     if match = CODE_DISTANCE_RE.match(response.body)  # 匹配签到码字段
       return match[1]
     else
@@ -104,7 +104,7 @@ class Checker
     end
   end
 
-  def check_all_accounts_token_avaliable
+  private def check_all_accounts_token_avaliable
     Log.info{"--------------------"}
     Log.info{"开始检查: 账号是否全部可用?"}
 

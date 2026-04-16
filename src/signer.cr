@@ -94,7 +94,7 @@ class Signer
   end
 
   # 签到方法单独拉出来，并发终于实现了！！！
-  def start_post(courseSignInId : String, codeStringUrl : (String | Nil))
+  private def start_post(courseSignInId : String, codeStringUrl : (String | Nil))
     # 启动waitgroup, 确保所有学生都签到完成再进行下一步
     WaitGroup.wait do |wg|
       @students.each do |student|
