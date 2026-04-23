@@ -7,7 +7,7 @@ REMAINING_TIME_RE = /"remainingTime"\s*:\s*(\d+)/
 SUCCESS_RE = /"success"\s*:\s*(true|false)/
 
 class Student
-  # 确定类型
+  # 每一个学生都有自己的name,token,还有跟前面签到id拼起来的post_url
   @name : String
   @token : String
   @post_url : String
