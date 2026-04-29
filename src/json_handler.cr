@@ -66,4 +66,17 @@ class JsonHandler
     # 无法获取签到时间，就返回0, 即立即签到
     return 0
   end
+
+  # 抓取签到是否成功
+  def self.catch_sign_successful?(body : String) : Bool
+    json = JSON.parse(body)
+
+    # 探测success是否为true
+    if success = json["success"]?
+      return success.as_bool
+    else
+      # 未探测到的话，直接按照未签到成功处理，返回false
+      return false
+    end
+  end
 end
