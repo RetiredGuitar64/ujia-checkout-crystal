@@ -1,9 +1,6 @@
 require "http/client"
 require "log"
 
-# 查看签到是否成功
-SUCCESS_RE = /"success"\s*:\s*(true|false)/
-
 class Student
   # 每一个学生都有自己的name,token,还有跟前面签到id拼起来的post_url
   @name : String
@@ -40,16 +37,11 @@ class Student
     response = HTTP::Client.post(@post_url, headers: @sign_in_headers)
 
     # 探测签到状态
-    if match = SUCCESS_RE.match(response.body)
-      if match[1] == "true"
-        # 签到成功
-        Log.info{"用户 #{@name} 签到成功！！！"}
-      else
-        Log.info{"#{@name} 签到失败！！请手动签到，未获取到签到码"} if codeStringUrl.nil?
-        Log.info{"#{@name} 签到失败！！请手动签到，签到码#{codeStringUrl.split('=')[1]}"} if !codeStringUrl.nil?
-      end
+    if JsonHandler.catch_sign_successful?(response.body)
+      Log.info{"用户 #{@name} 签到成功！！！"}
     else
-      Log.warn{"无法探测到 #{@name} 签到状态"}
+      Log.info{"#{@name} 签到失败！！请手动签到，未获取到签到码"} if codeStringUrl.nil?
+      Log.info{"#{@name} 签到失败！！请手动签到，签到码#{codeStringUrl.split('=')[1]}"} if !codeStringUrl.nil?
     end
   end
 
