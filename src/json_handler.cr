@@ -64,8 +64,8 @@ class JsonHandler
       end
     end
 
-    # 无法获取签到时间，就返回0, 即立即签到
-    return 0
+    # 无法获取签到时间，就返回-1, 即立即签到
+    return -1
   end
 
   # 抓取签到是否成功
