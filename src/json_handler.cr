@@ -51,4 +51,19 @@ class JsonHandler
     Log.warn{"未匹配到签到码字段，未知错误，将默认以普通签到进行"}
     return "200"
   end
+
+  # 抓取签到剩余秒数
+  def self.catch_remaining_seconds(body : String) : Int32
+    json = JSON.parse(body)
+
+    # 保险一点，防止这个data也没了
+    if data = json["data"]?
+      if remainingTime = data["remainingTime"]?
+        return remainingTime.as_i
+      end
+    end
+
+    # 无法获取签到时间，就返回0, 即立即签到
+    return 0
+  end
 end
