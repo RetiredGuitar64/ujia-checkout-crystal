@@ -3,9 +3,6 @@ require "http/client"
 
 require "./json_handler.cr"
 
-# 匹配公钥
-ENCRYPTION_KEY_RE = /"encryptionKey"\s*:\s*"([^"]+)"/
-
 # 匹配token
 ACCESS_TOKEN_RE = /"accessToken"\s*:\s*"([A-Za-z0-9\-]{48})"/
 
@@ -48,9 +45,9 @@ class AuthSaver
     # 拿响应
     response = HTTP::Client.post(post_url, headers: post_headers, body: post_body)
     # 匹配公钥字段
-    if match = ENCRYPTION_KEY_RE.match(response.body)
-      Log.info{"申请到公钥: #{match[1]}"}
-      return match[1]
+    if public_key = JsonHandler.catch_public_key(response.body)
+      Log.info{"申请到公钥: #{public_key}"}
+      return public_key
     else
       Log.warn{"未匹配到服务端下发公钥, 状态码: #{response.status_code}, 响应体: #{response.body}"}
       Log.error{"公钥获取失败，请手动处理"}

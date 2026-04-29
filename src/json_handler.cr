@@ -88,6 +88,7 @@ class JsonHandler
       if public_key = data["encryptionKey"]?
         return public_key.as_s
       else
+        # 如果匹配不到，就返回nil, 即会报错 匹配不到公钥
         return nil
       end
     else
