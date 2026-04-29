@@ -7,8 +7,6 @@ require "./json_handler.cr"
 
 # check循环的间隔
 SLEEP_GAP_IN_LOOP = 2
-# 签到码字段正则
-CODE_DISTANCE_RE = /"codeDistance"\s*:\s*"(\d{3,4})"/
 
 class Checker
   # 这两个实例变量，是checker自己用的，用来检查是否有签到，默认初始化第一个学生
@@ -59,7 +57,7 @@ class Checker
             response_of_code_check = HTTP::Client.get(code_check_url, check_headers)
 
             # 扫描签到码, 4位就是正常码，3位就是200, 即普通签到，
-            codeDistance : String = detect_codeDistance(response_of_code_check)
+            codeDistance : String = JsonHandler.catch_codeDistance(response_of_code_check.body)
             Log.info{"签到码: #{codeDistance}"}
             # web显示签到码
             @status.display_signin_code(codeDistance)
@@ -84,16 +82,6 @@ class Checker
       end
       # 间隔几秒
       sleep SLEEP_GAP_IN_LOOP.seconds
-    end
-  end
-
-  # 检测签到码的方法
-  private def detect_codeDistance(response : HTTP::Client::Response) : String
-    if match = CODE_DISTANCE_RE.match(response.body)  # 匹配签到码字段
-      return match[1]
-    else
-      Log.warn{"未匹配到签到码字段，未知错误，将默认以普通签到进行"}
-      return "200"
     end
   end
 
