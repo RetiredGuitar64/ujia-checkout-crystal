@@ -3,9 +3,6 @@ require "http/client"
 
 require "./json_handler.cr"
 
-# 匹配token
-ACCESS_TOKEN_RE = /"accessToken"\s*:\s*"([A-Za-z0-9\-]{48})"/
-
 class AuthSaver
   def initialize
   end
@@ -114,9 +111,9 @@ class AuthSaver
     response = HTTP::Client.post(post_url, headers: post_headers, body: post_body)
 
     # 匹配token字段
-    if match = ACCESS_TOKEN_RE.match(response.body)
-      Log.info{"获得token: #{match[1]}"}
-      return match[1]
+    if token = JsonHandler.catch_token(response.body)
+      Log.info{"获得token: #{token}"}
+      return token
     else
       Log.error{"未匹配到token字段, 响应体: #{response.body}"}
       return "!! token为空 !!"
