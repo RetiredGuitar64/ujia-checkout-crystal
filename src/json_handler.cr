@@ -49,7 +49,7 @@ class JsonHandler
       end
     end
 
-    Log.warn{"未匹配到签到码字段，未知错误，将默认以普通签到进行"}
+    Log.warn{"未匹配到签到码字段，无data或无codeDistance字段，将默认以普通签到进行"}
     return "200"
   end
 

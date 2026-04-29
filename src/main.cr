@@ -37,7 +37,7 @@ if auth_mode
 
   puts "开始认证..."
   token = auth.auth_with_password(phone, password)
-  sleep 1.seconds
+  sleep 0.5.seconds
   Log.info{ "认证完毕：请自行将token加入账号文件" }
 
   exit
