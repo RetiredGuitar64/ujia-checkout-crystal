@@ -1,11 +1,7 @@
 require "log"
 require "http/client"
 
-# 匹配公钥
-ENCRYPTION_KEY_RE = /"encryptionKey"\s*:\s*"([^"]+)"/
-
-# 匹配token
-ACCESS_TOKEN_RE = /"accessToken"\s*:\s*"([A-Za-z0-9\-]{48})"/
+require "./json_handler.cr"
 
 class AuthSaver
   def initialize
@@ -23,7 +19,7 @@ class AuthSaver
     token = get_token_with_password_login(public_key, cryptogram)
 
     # 检查token可用性
-    return "!! token 不可用!! : #{token}" if checkup_if_token_is_avaliable(token) == false
+    return "!! token 不可用!! : #{token}" if checkup_if_token_is_available(token) == false
 
     return token
   end
@@ -46,9 +42,9 @@ class AuthSaver
     # 拿响应
     response = HTTP::Client.post(post_url, headers: post_headers, body: post_body)
     # 匹配公钥字段
-    if match = ENCRYPTION_KEY_RE.match(response.body)
-      Log.info{"申请到公钥: #{match[1]}"}
-      return match[1]
+    if public_key = JsonHandler.catch_public_key(response.body)
+      Log.info{"申请到公钥: #{public_key}"}
+      return public_key
     else
       Log.warn{"未匹配到服务端下发公钥, 状态码: #{response.status_code}, 响应体: #{response.body}"}
       Log.error{"公钥获取失败，请手动处理"}
@@ -115,16 +111,16 @@ class AuthSaver
     response = HTTP::Client.post(post_url, headers: post_headers, body: post_body)
 
     # 匹配token字段
-    if match = ACCESS_TOKEN_RE.match(response.body)
-      Log.info{"获得token: #{match[1]}"}
-      return match[1]
+    if token = JsonHandler.catch_token(response.body)
+      Log.info{"获得token: #{token}"}
+      return token
     else
       Log.error{"未匹配到token字段, 响应体: #{response.body}"}
       return "!! token为空 !!"
     end
   end
 
-  private def checkup_if_token_is_avaliable(token : String) : Bool
+  private def checkup_if_token_is_available(token : String) : Bool
     Log.info{"检查token可用性"}
 
     cookie = "SESSION=#{token}"
@@ -142,12 +138,12 @@ class AuthSaver
     # 拿到响应
     response = HTTP::Client.get(id_check_url, check_headers)
 
-    # 状态码判断
-    if response.status_code == 200
+    # 状态码判断, 以及课程状态判断，避免状态码200但课程data为空
+    if response.status_code == 200 && JsonHandler.token_available?(response.body)
       Log.info{"检查完毕：token可用"}
       return true
     else
-      Log.error{"!! token不可用 !! #{token} 响应体: #{response.body}"}
+      Log.error{"!! token不可用 !! #{token} \n响应体: \n#{response.body}\n"}
       return false
     end
   end
