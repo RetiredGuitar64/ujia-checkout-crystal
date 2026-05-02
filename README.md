@@ -20,9 +20,13 @@
 2. 确保 **Crystal** 语言环境正常，**shards** 包管理正常
 3. 确保 本机/服务器 的端口`18888`打开
 #### Install
-1. 克隆仓库  
+1. 克隆仓库
    ```bash
    git clone https://github.com/RetiredGuitar64/ujia-signer-by-crystal.git
+   ```
+   并进入项目目录
+   ```bash
+   cd ujia-signer-by-crystal
    ```
 2. 编译可执行文件
    ```bash
