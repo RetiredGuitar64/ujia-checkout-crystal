@@ -46,7 +46,7 @@ class Checker
         # 拿到响应
         response = HTTP::Client.get(id_check_url, check_headers)
 
-        # 检查账号状态是否正常
+        # 检查账号状态是否正常,以及token是否可用,token_available?是来检查是否每个课程中，都有显示 签到是否开启 的字段
         if response.status_code == 200 && JsonHandler.token_available?(response.body)
           # 检查是否有签到
           if courseSignInId : (String | Nil) = JsonHandler.catch_courseSignInId(response.body) # 尝试抓取签到id
@@ -69,7 +69,7 @@ class Checker
             @status.display_normal_status
           end
         else
-          # 状态码不为200, 说明有问题
+          # 状态码不为200,或token不可用 说明有问题
           Log.error{"状态码: #{response.status_code}, \"#{@name}\" 的token \"#{@token}\" 可能已失效\n响应体：\n#{response.body}\n"}
           # web显示Error
           @status.display_404_status
