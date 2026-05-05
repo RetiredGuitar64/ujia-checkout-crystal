@@ -18,7 +18,7 @@ end
 # -u 认证并获取token
 if auth_mode
   puts "开始密码认证"
-  sleep 1.seconds
+  sleep 0.5.seconds
 
   auth = AuthSaver.new
   puts "请输入手机号: "
