@@ -52,14 +52,14 @@ class Student
     # 抓取剩余时间
     remainingTime = JsonHandler.catch_remaining_seconds(response.body)
 
-    if remainingTime != -1
-      # 状态不为-1，直接返回剩余时间
-      return remainingTime
-    else
-      # 状态为-1,则无法获取剩余时间，就返回剩余时间为0, 需要立即签到
-      Log.warn{"密码签到: #{codeStringUrl.split('=')[1]} 无法获取剩余时间,已立即签到"}
-      return 0
+    if remainingTime == -1
+      # 状态为-1,则无法获取剩余时间，就返回剩余时间为-1, 需要立即签到
+      Log.warn{"密码签到: #{codeStringUrl.split('=')[1]} 无法获取剩余时间,即将立即签到"}
+      return -1
     end
+
+    # 状态不为-1，直接返回剩余时间
+    return remainingTime
   end
 end
 

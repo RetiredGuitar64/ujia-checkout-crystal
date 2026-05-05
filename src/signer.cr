@@ -61,8 +61,8 @@ class Signer
           remaining_seconds = default_stu.get_remaining_seconds(courseSignInId, codeStringUrl)
           Log.info{"密码签到剩余 #{remaining_seconds} 秒"}
 
-          # 小于指定时间，开始签到
-          if remaining_seconds <= DEADLINE && remaining_seconds > 0
+          # 小于指定时间，开始签到, 或签到时间获取异常（-1）也开始立即签到
+          if (remaining_seconds <= DEADLINE && remaining_seconds > 0) || remaining_seconds == -1
 
             start_post(courseSignInId, codeStringUrl)
 
