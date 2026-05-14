@@ -11,6 +11,13 @@
 - 账号自动认证
 
 ## Installation
+目前支持两种安装方式：
+
+1. **下载最新 Release**  
+   直接前往 [Releases 页面](https://github.com/RetiredGuitar64/ujia-signer-by-crystal/releases) 下载最新版本。下载完成后，请跳转至 [Install #3：获取账号 token](#install-3-token)。
+
+2. **编译安装**  
+   如需自行编译安装，请继续按照下面的步骤操作。
 #### Dependencies
 > 目前仅支持Linux部署，其他平台请自行使用crystal语言环境编译
 1. 确保Nodejs可用
@@ -33,7 +40,7 @@
    shards build --release
    ```
    可执行文件会输出至项目目录的`bin`文件夹中
-3. 获取账号token
+3.  <a id="install-3-token"></a>获取账号token
    运行程序，并加入`-u`参数：
    ```bash
    ./bin/ujiacrystal -u
